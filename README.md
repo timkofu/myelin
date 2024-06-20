@@ -1,3 +1,3 @@
-# Scratch
+# Myelin
 
-`A Neural Network from scratch.`
+`A Neural Network.`
