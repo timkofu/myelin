@@ -1,3 +1,3 @@
 # Myelin
 
-`A Neural Network.`
+`A Neural Network from scratch.`
