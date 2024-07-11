@@ -1,13 +1,13 @@
 testrun: test run
 
 run:
-	@go run -race myelin.makobu.name
+	@cargo run
 
 test:
-	@go test ./...
+	@cargo test
 
 update:
-	@go get -u ./...
-	@go mod tidy
+	@cargo update
 
-release: test
+release: update test
+
