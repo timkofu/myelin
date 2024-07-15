@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Run: git config core.hooksPath `pwd`/.githooks
+
+
+declare -a EXIT_CODES=()
+
+if [[ $(redis-cli EXISTS myelin_already_updated) != "1" ]]; then
+    make update
+    EXIT_CODES+=( $? )
+    redis-cli SET skel_already_updated 1 EX 86400 > /dev/null
+    EXIT_CODES+=( $? )
+fi
+
+make release
+EXIT_CODES+=( $? )
+poetry export --without-hashes -f requirements.txt > requirements.pip
+EXIT_CODES+=( $? )
+poetry export --without-hashes --with dev -f requirements.txt > dev_requirements.pip
+EXIT_CODES+=( $? )
+git add pyproject.toml requirements.pip dev_requirements.pip doc
+EXIT_CODES+=( $? )
+
+
+# Check that all commands exited with success (0), and if not, cancel the commit
+for e in ${EXIT_CODES[@]}; do
+   if [[ $e -gt 0 ]]
+   then
+       exit 1
+   fi
+done
